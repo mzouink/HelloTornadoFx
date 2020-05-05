@@ -6,7 +6,9 @@ import tornadofx.*
 class TopView : View("My View") {
 
     val mainController: MainController by inject()
+
     override val root = listview(mainController.students) {
+        prefHeight = 245.0
         cellFormat {
             text = it
             if (text.contains("Ma")) {

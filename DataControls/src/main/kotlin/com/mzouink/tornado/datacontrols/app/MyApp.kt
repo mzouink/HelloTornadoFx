@@ -7,8 +7,8 @@ import tornadofx.App
 class MyApp: App(MainView::class, Styles::class){
     override fun start(stage: Stage) {
         with(stage){
-            width = 500.0
-            height= 600.0
+            width = 800.0
+            height= 1000.0
         }
         super.start(stage)
     }
