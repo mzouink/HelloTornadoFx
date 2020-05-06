@@ -25,7 +25,7 @@ class MainView : View("Hello TornadoFX") {
     var billAmountField: TextField by singleAssign()
 
     override val root = vbox {
-
+        addClass(Styles.vBoxx)
         alignment = Pos.CENTER
         label("Total per person").apply {
             addClass(Styles.heading)
