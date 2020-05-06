@@ -13,8 +13,8 @@ class MainView : View("Hello TornadoFX") {
     val studentEditor : StudentEditor by inject()
     override val root: BorderPane = borderpane {
 
-        bottom = bottomView.root
-        top = topView.root
+//        bottom = bottomView.root
+//        top = topView.root
         center = centerView.root
         left = studentEditor.root
     }
