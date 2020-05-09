@@ -89,9 +89,14 @@ class ExpensesEditor : View("Expenses") {
                         items = controller.items
                         mTableView = editModel
                         column("ID", ExpensesEntryModel::id)
-                        column("Added", ExpensesEntryModel::entryDate)
-                        column("Name", ExpensesEntryModel::itemName)
-                        column("Price", ExpensesEntryModel::itemPrice)
+                        column("Added", ExpensesEntryModel::entryDate).makeEditable()
+                        column("Name", ExpensesEntryModel::itemName).makeEditable()
+                        column("Price", ExpensesEntryModel::itemPrice).makeEditable()
+
+                        onEditCommit {
+                            controller.update(it)
+                            controller.updatePiecePie(it)
+                        }
                     }
                 }
             }

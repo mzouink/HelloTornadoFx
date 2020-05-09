@@ -84,6 +84,19 @@ class ItemController : Controller() {
         removeModelFromPie(model)
     }
 
+    fun updatePiecePie(model: ExpensesEntryModel){
+        var modelId = model.id
+        var currentIndex : Int = 0
+
+        items.forEachIndexed { index, data ->
+            if(data.id == modelId ){
+                currentIndex = index
+                pieItemsData[currentIndex].name = data.itemName.value
+                pieItemsData[currentIndex].pieValue = data.itemPrice.value.toDouble()
+            }
+        }
+        pieItemsData.removeAt(currentIndex)
+    }
     private fun removeModelFromPie(model: ExpensesEntryModel) {
         var currentIndex = 0
         pieItemsData.forEachIndexed { index, data ->
