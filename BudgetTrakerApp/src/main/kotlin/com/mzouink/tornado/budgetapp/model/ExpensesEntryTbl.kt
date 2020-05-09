@@ -43,7 +43,7 @@ class ExpensesEntry(id: Int, entryDate: LocalDate, itemName: String, itemPrice: 
     }
 }
 
-class ExpensesEntryMoodel : ItemViewModel<ExpensesEntry>() {
+class ExpensesEntryModel : ItemViewModel<ExpensesEntry>() {
     val id = bind { item?.idProperty }
     val entryDate = bind { item?.entryDateProperty }
     val itemPrice = bind { item?.itemPriceProperty }
