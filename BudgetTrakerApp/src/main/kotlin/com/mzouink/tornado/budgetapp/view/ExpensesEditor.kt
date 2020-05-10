@@ -2,7 +2,10 @@ package com.mzouink.tornado.budgetapp.view
 
 import com.mzouink.tornado.budgetapp.controller.ItemController
 import com.mzouink.tornado.budgetapp.model.ExpensesEntryModel
+import javafx.beans.binding.Bindings
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Pos
+import javafx.scene.control.Label
 import javafx.scene.input.KeyCode
 import tornadofx.*
 
@@ -10,9 +13,17 @@ class ExpensesEditor : View("Expenses") {
     val model = ExpensesEntryModel()
     val controller: ItemController by inject()
 
-    var mTableView : TableViewEditModel<ExpensesEntryModel> by singleAssign()
+    var mTableView: TableViewEditModel<ExpensesEntryModel> by singleAssign()
+    val totalExpensesProperty = SimpleDoubleProperty(0.0)
+    var totalExpensesLabel: Label by singleAssign()
+
+    init {
+        updateTotalExpenses()
+    }
 
     override val root = borderpane {
+        disableDelete()
+        disableCreate()
         center = vbox {
             form {
                 fieldset {
@@ -74,13 +85,23 @@ class ExpensesEditor : View("Expenses") {
                     button("Delete") {
                         action {
                             val selectedItem = mTableView.tableView.selectedItem
-                            controller.delete(selectedItem!!)
+                            when (selectedItem) {
+                                null -> return@action
+                                else -> {
+                                    val diff = totalExpensesProperty.value - selectedItem.item.itemPrice
+                                    totalExpensesProperty.value = diff
+                                    controller.delete(selectedItem)
+                                    updateTotalExpenses()
+                                }
+                            }
                         }
                     }
                     button("Reset") {
-                        enableWhen(model.dirty)
+                        enableWhen(model.valid)
                         action {
-
+                            model.commit {
+                                model.rollback()
+                            }
                         }
                     }
                 }
@@ -101,16 +122,23 @@ class ExpensesEditor : View("Expenses") {
                 }
             }
         }
-right = vbox {
-    alignment = Pos.CENTER
-    piechart {
-        data = controller.pieItemsData
+        right = vbox {
+            alignment = Pos.CENTER
+            piechart("Total Expenses") {
+                data = controller.pieItemsData
 //        data("Bananas", 120.0)
 //        data("Baanas", 200.0)
 //        data("B2nanas", 12.0)
 //        data("Ban1anas", 150.0)
-    }
-}
+            }
+            totalExpensesLabel = label {
+                if (totalExpensesProperty.doubleValue() != 0.0) {
+                    bind(Bindings.concat("Total Expenses: ", "$", Bindings.format("%.2f", totalExpensesProperty)))
+                } else {
+                    // do nothing
+                }
+            }
+        }
     }
 
 
@@ -121,7 +149,34 @@ right = vbox {
         }
     }
 
+    private fun updateTotalExpenses() {
+        var total = 0.0
+        try {
+            controller.items.forEach {
+                total += it.itemPrice.value.toDouble()
+            }
+            totalExpensesProperty.set(total)
+            model.totalExpenses.value = total
+        } catch (e: Exception) {
+            totalExpensesProperty.set(0.0)
+        }
+    }
+
     private fun addItem() {
         controller.add(model.entryDate.value, model.itemName.value, model.itemPrice.value.toDouble())
+        updateTotalExpenses()
+    }
+
+    override fun onSave() {
+        // Here do on save
+        super.onSave()
+    }
+
+    override fun onRefresh() {
+        super.onRefresh()
+    }
+
+    override fun onDelete() {
+        super.onDelete()
     }
 }

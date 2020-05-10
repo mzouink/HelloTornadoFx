@@ -95,7 +95,6 @@ class ItemController : Controller() {
                 pieItemsData[currentIndex].pieValue = data.itemPrice.value.toDouble()
             }
         }
-        pieItemsData.removeAt(currentIndex)
     }
     private fun removeModelFromPie(model: ExpensesEntryModel) {
         var currentIndex = 0

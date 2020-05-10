@@ -1,6 +1,7 @@
 package com.mzouink.tornado.budgetapp.model
 
 import com.mzouink.tornado.budgetapp.util.toJavaLocalDate
+import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -38,6 +39,8 @@ class ExpensesEntry(id: Int, entryDate: LocalDate, itemName: String, itemPrice: 
     val itemNameProperty = SimpleStringProperty(itemName)
     var itemName by itemNameProperty
 
+    var totalExpenses = Bindings.add(itemPriceProperty, 0)
+
     override fun toString(): String {
         return "ExpensesEntry(id=$id, entryDate=$entryDate, itemName=$itemName, itemPrice=$itemPrice"
     }
@@ -48,4 +51,5 @@ class ExpensesEntryModel : ItemViewModel<ExpensesEntry>() {
     val entryDate = bind { item?.entryDateProperty }
     val itemPrice = bind { item?.itemPriceProperty }
     val itemName = bind { item?.itemNameProperty }
+    var totalExpenses = itemProperty.select(ExpensesEntry::totalExpenses)
 }
